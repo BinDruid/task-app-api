@@ -1,0 +1,62 @@
+### Variables
+@base = http://localhost:4030/v1
+@auth-token = e728893dbea577b524ceee4d978897d9f2c6165d
+@task_id = 8b9ac8e5-35b9-4f41-a22e-a8fafeb6bf9b
+@contentType = application/json
+###
+# Register new user
+POST {{base}}/auth/users/
+Content-Type: {{contentType}}
+
+{    
+    "username":"",
+    "password": ""
+}
+
+###
+# Get auth token
+POST {{base}}/auth/token/login/
+Content-Type: {{contentType}}
+
+{    
+    "username":"",
+    "password": ""
+}
+
+###
+# Create new task
+POST {{base}}/tasks/
+Authorization: Token {{auth-token}}
+Content-Type: {{contentType}}
+
+{
+    "title": "task name",
+    "description": "i have to"
+}
+
+###
+# Get all tasks that the user own
+GET {{base}}/tasks/
+Authorization: Token {{auth-token}}
+Content-Type: {{contentType}}
+###
+# Get detail of a task that user owns
+GET {{base}}/tasks/{{task_id}}/
+Authorization: Token {{auth-token}}
+Content-Type: {{contentType}}
+###
+# Update a task 
+PATCH {{base}}/tasks/{{task_id}}/
+Authorization: Token {{auth-token}}
+Content-Type: {{contentType}}
+
+{
+    "title": "no no"
+}
+
+###
+# Delete a task
+DELETE {{base}}/tasks/{{task_id}}/
+Authorization: Token {{auth-token}}
+Content-Type: {{contentType}}
+###

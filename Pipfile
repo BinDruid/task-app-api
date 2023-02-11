@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+psycopg2-binary = "*"
+django-extensions = "*"
+gunicorn = "*"
+django-redis = "*"
+python-dotenv = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+drf-standardized-errors = "*"
+djoser = "*"
+drf-yasg = "*"
+django-jalali = {extras = ["drf"], version = "*"}
+
+[dev-packages]
+django-debug-toolbar = "*"
+black = "*"
+darker = "*"
+
+[requires]
+python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true
