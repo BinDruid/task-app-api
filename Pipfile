@@ -16,6 +16,7 @@ drf-standardized-errors = "*"
 djoser = "*"
 drf-yasg = "*"
 django-jalali = {extras = ["drf"], version = "*"}
+jupyter = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"
