@@ -1,10 +1,15 @@
 from django.urls import path
-from .views import TaskView
+from apps.tasks.views import TaskView
 
 urlpatterns = [
     path(
         "",
-        (TaskView.as_view({"get": "list", "post": "create"})),
+        (TaskView.as_view({"post": "create"})),
+        name="new_task",
+    ),
+    path(
+        "recent/",
+        (TaskView.as_view({"get": "list"})),
         name="tasks",
     ),
     path(
