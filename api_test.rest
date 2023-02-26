@@ -30,13 +30,13 @@ Authorization: Token {{auth-token}}
 Content-Type: {{contentType}}
 
 {
-    "title": "task name",
-    "description": "i have to"
+    "title": "got list",
+    "description": "im trying"
 }
 
 ###
 # Get all tasks that the user own
-GET {{base}}/tasks/
+GET {{base}}/tasks/recent/
 Authorization: Token {{auth-token}}
 Content-Type: {{contentType}}
 ###
