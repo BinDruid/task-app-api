@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.db.models.functions import TruncDay
 
 from .models import Task
 
@@ -20,8 +21,6 @@ class TaskListSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
-            "created_at",
-            "finished_at",
             "is_finished",
         ]
 
