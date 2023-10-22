@@ -69,7 +69,6 @@ class TaskView(ActionMixin, ModelViewSet):
         ]
 
         week_days = [day.strftime("%d %b, %Y") for day in recent_days]
-
         return Response(
             dict(zip(week_days, [serializer.data for serializer in serializers]))
         )

@@ -24,7 +24,6 @@ INSTALLED_APPS = [
     # third party
     "rest_framework",
     "rest_framework.authtoken",
-    "drf_yasg",
     "djoser",
     "drf_standardized_errors",
     "corsheaders",
@@ -75,14 +74,14 @@ DATABASES = {
 }
 
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": configs["REDIS_URL"],
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-        "KEY_PREFIX": configs["REDIS_PREFIX"],
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": configs["REDIS_URL"],
+#         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+#         "KEY_PREFIX": configs["REDIS_PREFIX"],
+#     }
+# }
 
 # Cache time to live is 60 minutes.
 CACHE_TTL = 60 * 60
@@ -130,3 +129,6 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/2"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/2"
