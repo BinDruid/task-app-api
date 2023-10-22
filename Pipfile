@@ -14,13 +14,16 @@ djangorestframework = "*"
 django-cors-headers = "*"
 drf-standardized-errors = "*"
 djoser = "*"
-drf-yasg = "*"
 django-jalali = {extras = ["drf"], version = "*"}
+celery = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"
 black = "*"
 darker = "*"
+jupyter = "*"
+pytest-django = "*"
+model-bakery = "*"
 
 [requires]
 python_version = "3.10"
