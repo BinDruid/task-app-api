@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     # third party
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_spectacular",
     "djoser",
     "drf_standardized_errors",
     "corsheaders",
@@ -123,9 +124,15 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 400,
     "COERCE_DECIMAL_TO_STRING": False,
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.TokenAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Task API',
+    'DESCRIPTION': 'Endpoints to consume Task API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
