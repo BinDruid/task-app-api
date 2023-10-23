@@ -1,12 +1,9 @@
 import os
 from pathlib import Path
-from dotenv import dotenv_values
-
-configs = dotenv_values(".env")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = configs["DJANGO_SECRET"]
+SECRET_KEY = os.getenv("DJANGO_SECRET")
 
 # Application definition
 
@@ -66,11 +63,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": configs["DB_NAME"],
-        "USER": configs["DB_USER"],
-        "PASSWORD": configs["DB_PASS"],
-        "HOST": configs["DB_HOST"],
-        "PORT": configs["DB_PORT"],
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASS"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
     }
 }
 
