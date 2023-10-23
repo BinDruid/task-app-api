@@ -16,13 +16,12 @@ drf-standardized-errors = "*"
 djoser = "*"
 django-jalali = {extras = ["drf"], version = "*"}
 celery = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"
 black = "*"
 darker = "*"
-jupyter = "*"
-pytest-django = "*"
 model-bakery = "*"
 
 [requires]
