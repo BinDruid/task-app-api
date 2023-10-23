@@ -1,27 +1,30 @@
-import pytest
 from rest_framework import status
+from rest_framework.test import APIClient
+from django.test import TestCase
 from django.contrib.auth import get_user_model
-from apps.tasks.models import Task
 from model_bakery import baker
+from apps.tasks.models import Task
+
 User = get_user_model()
 
 
-@pytest.mark.django_db
-class TestTaskEndPoint:
-    def test_unauthorized_access(self, api):
-        response = api.get("/v1/tasks/recent/")
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+class TestTaskCreation(TestCase):
+    def setUp(self):
+        self.base_api_url = "http://localhost:9000/v1"
+        self.user = baker.make(User)
+        self.tasks = baker.make(Task, owner=self.user, _quantity=10)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
 
-    
-    def test_user_can_list_his_tasks(self, api):
-        user = baker.make(User)
-        tasks = baker.make(Task, owner=user, _quantity=10)
-        api.force_authenticate(user=user)
-        response = api.get("/v1/tasks/recent/")
-        assert response.status_code == status.HTTP_200_OK
+    def test_task_count(self):
+        url = self.base_api_url + "/tasks/recent/"
+        response = self.client.get(url)
 
-    # def test_user_has_access(self, api):
-    #     user = User.objects.get(username='druid')
-    #     api.force_authenticate(user=user)
-    #     response = api.get("/v1/tasks/recent/")
-    #     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_can_create_task(self):
+        url = self.base_api_url + "/tasks/"
+        response = self.client.post(url, data={"title": "new_task", "description": "test task has been created"})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["title"], "new_task")
