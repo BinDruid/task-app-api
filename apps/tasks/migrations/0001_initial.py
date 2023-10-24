@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import django_jalali.db.models
 import uuid
 
 
@@ -31,19 +30,19 @@ class Migration(migrations.Migration):
                 ("description", models.TextField()),
                 (
                     "created_at",
-                    django_jalali.db.models.jDateTimeField(
+                    models.DateTimeField(
                         auto_now_add=True, verbose_name="تاریخ ایجاد"
                     ),
                 ),
                 (
                     "updated_at",
-                    django_jalali.db.models.jDateTimeField(
+                    models.DateTimeField(
                         auto_now=True, verbose_name="تاریخ ویرایش"
                     ),
                 ),
                 (
                     "finished_at",
-                    django_jalali.db.models.jDateTimeField(
+                    models.DateTimeField(
                         blank=True, null=True, verbose_name="تاریخ اتمام"
                     ),
                 ),
