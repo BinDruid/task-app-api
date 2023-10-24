@@ -1,6 +1,7 @@
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.utils import timezone
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from model_bakery import baker
@@ -14,7 +15,7 @@ class TestTaskCreation(TestCase):
         self.base_api_url = "http://localhost:9000/v1"
         self.user = baker.make(User)
         self.today_tasks_count = 10
-        today = datetime.now()
+        today = timezone.now()
         yesterday = today + timedelta(days=2)
         baker.make(Task, owner=self.user, created_at=today, _quantity=self.today_tasks_count)
         baker.make(Task, owner=self.user, created_at=yesterday, _quantity=20)
