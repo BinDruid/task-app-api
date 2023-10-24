@@ -13,7 +13,6 @@ djangorestframework = "*"
 django-cors-headers = "*"
 drf-standardized-errors = "*"
 djoser = "*"
-django-jalali = {extras = ["drf"], version = "*"}
 celery = "*"
 drf-spectacular = "*"
 
