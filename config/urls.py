@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.conf import settings
 from django.urls import path, include
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path("", include("apps.core.urls")),
@@ -9,9 +9,8 @@ urlpatterns = [
     path("v1/auth/", include("djoser.urls")),
     path("v1/auth/", include("djoser.urls.authtoken")),
     path("v1/tasks/", include("apps.tasks.urls")),
-    path('docs/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
 
 if settings.DEBUG:

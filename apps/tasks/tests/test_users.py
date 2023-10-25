@@ -9,7 +9,7 @@ from rest_framework.test import APIClient
 User = get_user_model()
 
 
-class TestTaskCreation(TestCase):
+class TestUserAuthentication(TestCase):
     def setUp(self):
         self.base_api_url = "http://localhost:9000/v1"
         self.client = APIClient()
