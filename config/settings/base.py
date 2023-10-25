@@ -17,12 +17,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # project apps
     "apps.core",
+    "apps.users",
     "apps.tasks",
     # third party
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
-    "djoser",
     "drf_standardized_errors",
     "corsheaders",
     "django_extensions",
@@ -99,6 +99,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.User"
 
 LANGUAGE_CODE = "en-us"
 

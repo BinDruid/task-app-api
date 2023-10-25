@@ -12,7 +12,6 @@ django-redis = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 drf-standardized-errors = "*"
-djoser = "*"
 celery = "*"
 drf-spectacular = "*"
 
