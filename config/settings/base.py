@@ -7,19 +7,16 @@ SECRET_KEY = os.getenv("DJANGO_SECRET")
 
 # Application definition
 
-INSTALLED_APPS = [
-    # django apps
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # project apps
-    "apps.core",
-    "apps.users",
-    "apps.tasks",
-    # third party
+]
+
+THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
@@ -27,6 +24,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_extensions",
 ]
+
+PROJECT_APPS = ["apps.core", "apps.accounts", "apps.tasks"]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -99,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "accounts.User"
 
 LANGUAGE_CODE = "en-us"
 
@@ -119,18 +120,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 400,
+    "PAGE_SIZE": 100,
     "COERCE_DECIMAL_TO_STRING": False,
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Task API',
-    'DESCRIPTION': 'Endpoints to consume Task API',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "TITLE": "Task API",
+    "DESCRIPTION": "Endpoints to consume Task API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
