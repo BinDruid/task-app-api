@@ -27,7 +27,7 @@ THIRD_PARTY_APPS = [
 
 PROJECT_APPS = ["apps.core", "apps.accounts", "apps.tasks"]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
