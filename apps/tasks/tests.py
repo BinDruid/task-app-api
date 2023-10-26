@@ -21,7 +21,7 @@ class TestTaskCreation(TestCase):
         self.user = baker.make(User)
         self.today_tasks_count = 10
         today = timezone.now()
-        yesterday = today + timedelta(days=2)
+        yesterday = today + timedelta(days=1)
         baker.make(Task, owner=self.user, created_at=today, _quantity=self.today_tasks_count)
         baker.make(Task, owner=self.user, created_at=yesterday, _quantity=20)
         self.client = APIClient()
@@ -29,7 +29,6 @@ class TestTaskCreation(TestCase):
 
     def test_recent_tasks_aggregation(self):
         response = self.client.get(RECENT_TASKS_URL)
-        print(response.data)
         today = date.today().strftime("%d %b, %Y")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data[today]), self.today_tasks_count)
