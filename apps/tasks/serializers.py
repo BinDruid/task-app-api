@@ -1,17 +1,8 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from django.db.models.functions import TruncDay
+
+from apps.accounts.serializers import UserSerializer
 
 from .models import Task
-
-
-UserModel = get_user_model()
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserModel
-        fields = ["username", "email"]
 
 
 class TaskListSerializer(serializers.ModelSerializer):
