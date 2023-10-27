@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db.models.functions import TruncDate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -6,8 +5,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.tasks.models import Task
 from apps.tasks.serializers import TaskSerializer
-
-UserModel = get_user_model()
 
 
 class TaskView(ModelViewSet):
