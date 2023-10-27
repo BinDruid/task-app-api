@@ -6,7 +6,7 @@ from .models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    owner = UserSerializer()
+    owner = UserSerializer(required=False)
 
     class Meta:
         model = Task
@@ -20,7 +20,6 @@ class TaskSerializer(serializers.ModelSerializer):
             "finished_at",
             "is_finished",
         ]
-        read_only_fields = ["owner"]
 
     def to_representation(self, instance):
         instance_dict = super().to_representation(instance)

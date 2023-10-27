@@ -30,6 +30,7 @@ class TestTaskCreation(TestCase):
     def test_recent_tasks_aggregation(self):
         response = self.client.get(RECENT_TASKS_URL)
         today = date.today().strftime("%d %b, %Y")
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data[today]), self.today_tasks_count)
 
