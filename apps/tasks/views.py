@@ -47,7 +47,7 @@ class TaskView(ModelViewSet):
             ),
         ],
     )
-    @action(detail=True, methods=["get"])
+    @action(detail=False, methods=["get"])
     def list_recent_tasks(self, request, *args, **kwargs):
         base_query = Task.objects.filter(owner=request.user).annotate(day=TruncDate("created_at"))
         recent_days = (base_query.values_list("day", flat=True).distinct().order_by("-day"))[:6]
