@@ -16,11 +16,12 @@ class TestUserAuthentication(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def create_test_user(self):
-        return self.client.post(USER_CREATE_URL, data=PAYLOAD)
+    def create_sample_user(self):
+        user = User.objects.create_user(**PAYLOAD)
+        return user
 
     def test_new_user_registration(self):
-        response = self.create_test_user()
+        response = self.client.post(USER_CREATE_URL, data=PAYLOAD)
         user = User.objects.get(username=PAYLOAD["username"])
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -28,9 +29,9 @@ class TestUserAuthentication(TestCase):
         self.assertNotIn("password", response.data)
 
     def test_user_can_get_token(self):
-        self.create_test_user()
+        user = self.create_sample_user()
+        token = Token.objects.get(user=user)
         response = self.client.post(TOKEN_URL, data=PAYLOAD)
-        token = Token.objects.get(user__username=PAYLOAD["username"])
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["token"], token.key)
