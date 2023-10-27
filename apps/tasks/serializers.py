@@ -5,18 +5,7 @@ from apps.accounts.serializers import UserSerializer
 from .models import Task
 
 
-class TaskListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Task
-        fields = [
-            "id",
-            "title",
-            "description",
-            "is_finished",
-        ]
-
-
-class TaskDetailSerializer(serializers.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     owner = UserSerializer()
 
     class Meta:
@@ -31,9 +20,13 @@ class TaskDetailSerializer(serializers.ModelSerializer):
             "finished_at",
             "is_finished",
         ]
+        read_only_fields = ["owner"]
 
-
-class TaskCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Task
-        exclude = ("owner",)
+    def to_representation(self, instance):
+        instance_dict = super().to_representation(instance)
+        instance_dict["owner"] = instance_dict["owner"]["username"]
+        if instance_dict["is_finished"]:
+            del instance_dict["is_finished"]
+        else:
+            del instance_dict["finished_at"]
+        return instance_dict
