@@ -68,5 +68,4 @@ class TestTaskCreation(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data[today]), self.today_tasks_count)
-        self.assertEqual(len(response.data[today]), self.today_tasks_count)
         self.assertEqual(len(response.data[yesterday]), self.yesterday_count)
