@@ -16,14 +16,6 @@ class TaskView(ModelViewSet):
     serializer_class = TaskSerializer
     queryset = Task.objects.all().select_related("owner")
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        response.data["message"] = "New task created!"
-        return response
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
     def list(self, request, *args, **kwargs):
         base_query = Task.objects.filter(owner=request.user).annotate(day=TruncDate("created_at"))
 

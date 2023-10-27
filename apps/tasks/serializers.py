@@ -6,7 +6,7 @@ from .models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(required=False)
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Task
@@ -23,7 +23,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         instance_dict = super().to_representation(instance)
-        instance_dict["owner"] = instance_dict["owner"]["username"]
         if instance_dict["is_finished"]:
             del instance_dict["is_finished"]
         else:
