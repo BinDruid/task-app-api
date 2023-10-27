@@ -130,6 +130,7 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "Task API",
     "DESCRIPTION": "Endpoints to consume Task API",
+    "SCHEMA_PATH_PREFIX": "/v[0-9]",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
