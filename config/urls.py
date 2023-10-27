@@ -4,12 +4,11 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
-    path("", include("apps.core.urls")),
-    path("master/", admin.site.urls),
-    path("v1/user/", include("apps.accounts.urls", namespace="accounts")),
-    path("v1/task/", include("apps.tasks.urls", namespace="tasks")),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
-    path("docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("master/", admin.site.urls),
+    path("user/", include("apps.accounts.urls", namespace="accounts")),
+    path("task/", include("apps.tasks.urls", namespace="tasks")),
 ]
 
 if settings.DEBUG:
