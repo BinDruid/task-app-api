@@ -13,7 +13,9 @@ class TaskView(ModelViewSet):
     lookup_field = "pk"
     permission_classes = [IsAuthenticated]
     serializer_class = TaskSerializer
-    queryset = Task.objects.all().select_related("owner")
+
+    def get_queryset(self):
+        return Task.objects.all().filter(owner=self.request.user).select_related("owner")
 
     @extend_schema(
         description="Aggregates user tasks based on creation date and shows a list of tasks for last 7 recent days.",
