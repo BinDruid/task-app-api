@@ -6,16 +6,21 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.tasks.models import Task
-from apps.tasks.serializers import TaskSerializer
+from apps.tasks.serializers import TaskSerializer, TaskDetailSerializer
 
 
 class TaskView(ModelViewSet):
     lookup_field = "pk"
     permission_classes = [IsAuthenticated]
-    serializer_class = TaskSerializer
+    serializer_class = TaskDetailSerializer
 
     def get_queryset(self):
         return Task.objects.all().filter(owner=self.request.user).select_related("owner")
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return TaskSerializer
+        return self.serializer_class
 
     @extend_schema(
         description="Aggregates user tasks based on creation date and shows a list of tasks for last 7 recent days.",

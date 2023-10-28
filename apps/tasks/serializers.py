@@ -4,16 +4,23 @@ from .models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
     class Meta:
         model = Task
         fields = [
             "id",
             "title",
             "description",
-            "owner",
             "created_at",
+        ]
+
+
+class TaskDetailSerializer(TaskSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Task
+        fields = TaskSerializer.Meta.fields + [
+            "owner",
             "updated_at",
             "finished_at",
             "is_finished",
