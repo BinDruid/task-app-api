@@ -20,6 +20,20 @@ class TestUserAuthentication(TestCase):
         user = User.objects.create_user(**PAYLOAD)
         return user
 
+    def test_new_regular_user_creation(self):
+        user = self.create_sample_user()
+        user = User.objects.get(username=PAYLOAD["username"])
+
+        self.assertEqual(user.email, PAYLOAD["email"])
+        self.assertEqual(user.username, PAYLOAD["username"])
+        self.assertTrue(user.check_password(PAYLOAD["password"]))
+
+    def test_new_superuser_creation(self):
+        user = User.objects.create_superuser(**PAYLOAD)
+
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_superuser)
+
     def test_new_user_registration(self):
         response = self.client.post(USER_CREATE_URL, data=PAYLOAD)
         user = User.objects.get(username=PAYLOAD["username"])
