@@ -30,7 +30,7 @@ class TestTaskCreation(TestCase):
 
     def test_get_single_task_details(self):
         task = baker.make(Task, owner=self.user)
-        url = reverse("tasks:detail", kwargs={"pk": task.pk})
+        url = reverse("tasks:detail", args=[task.pk])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -45,7 +45,7 @@ class TestTaskCreation(TestCase):
 
     def test_update_single_task(self):
         task = baker.make(Task, owner=self.user)
-        url = reverse("tasks:detail", kwargs={"pk": task.pk})
+        url = reverse("tasks:detail", args=[task.pk])
         payload = {"title": "test_update"}
         response = self.client.patch(url, data=payload)
 
@@ -54,7 +54,7 @@ class TestTaskCreation(TestCase):
 
     def test_delete_single_task(self):
         task = baker.make(Task, owner=self.user)
-        url = reverse("tasks:detail", kwargs={"pk": task.pk})
+        url = reverse("tasks:detail", args=[task.pk])
         response = self.client.delete(url)
         task_exists = Task.objects.filter(pk=task.pk).exists()
 
