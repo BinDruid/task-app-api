@@ -22,16 +22,16 @@ class TestTaskEndpoint(TestCase):
         self.user = baker.make(User)
         self.today_tasks_count = 10
         self.yesterday_count = 20
-        self.tags = baker.make(Tag, _quantity=5)
         today = timezone.now()
         yesterday = today + timedelta(days=1)
+        self.tags = baker.make(Tag, _quantity=5)
         baker.make(Task, owner=self.user, created_at=today, _quantity=self.today_tasks_count)
         baker.make(Task, owner=self.user, created_at=yesterday, _quantity=self.yesterday_count)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
     def test_create_single_task(self):
-        payload = {"title": "new_test_task", "description": "test task to create"}
+        payload = {"title": "sample task", "description": "sample description"}
         response = self.client.post(TASKS_URL, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -91,7 +91,7 @@ class TestTagEndpoint(TestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_create_single_tag(self):
-        payload = {"title": "new sample tag", "description": "more detail about tag"}
+        payload = {"title": "sample tag", "description": "sample description"}
         response = self.client.post(TAGS_URL, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
