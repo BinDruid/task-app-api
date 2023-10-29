@@ -10,7 +10,13 @@ urlpatterns = [
     path(
         "task/<uuid:pk>/",
         (TaskView.as_view({"get": "retrieve", "delete": "destroy", "patch": "partial_update"})),
-        name="detail",
+        name="task-detail",
     ),
     path("tag/", (TagView.as_view({"post": "create", "get": "list"})), name="tags"),
+        path(
+        "tag/<uuid:pk>/",
+        (TagView.as_view({"get": "retrieve", "delete": "destroy", "patch": "partial_update"})),
+        name="tag-detail",
+    ),
+
 ]
