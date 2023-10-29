@@ -8,12 +8,13 @@ from model_bakery import baker
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.tasks.models import Task
+from apps.tasks.models import Task, Tag
 
 User = get_user_model()
 
+TASKS_URL = reverse("tasks:tasks")
+TAGS_URL = reverse("tasks:tags")
 RECENT_TASKS_URL = reverse("tasks:recent")
-TASKS_CREATE_URL = reverse("tasks:create")
 
 
 class TestTaskCreation(TestCase):
@@ -38,7 +39,7 @@ class TestTaskCreation(TestCase):
 
     def test_create_single_task(self):
         payload = {"title": "new_test_task", "description": "test task to create"}
-        response = self.client.post(TASKS_CREATE_URL, data=payload)
+        response = self.client.post(TASKS_URL, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["title"], payload["title"])
@@ -69,3 +70,16 @@ class TestTaskCreation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data[today]), self.today_tasks_count)
         self.assertEqual(len(response.data[yesterday]), self.yesterday_count)
+
+class TestTaskCreation(TestCase):
+    def setUp(self):
+        self.user = baker.make(User)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_create_single_tag(self):
+        payload = {"title": "new sample tag", "description": "more detail about tag"}
+        response = self.client.post(TAGS_URL, data=payload)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["title"], payload["title"])

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Task
+from .models import Task, Tag
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -33,3 +33,15 @@ class TaskDetailSerializer(TaskSerializer):
         else:
             del instance_dict["finished_at"]
         return instance_dict
+
+class TagSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    
+    class Meta:
+        model = Tag
+        fields = [
+            "id",
+            "title",
+            "description",
+            "owner"
+        ]

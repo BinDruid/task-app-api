@@ -5,17 +5,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from apps.tasks.models import Task
-from apps.tasks.serializers import TaskSerializer, TaskDetailSerializer
+from apps.tasks.models import Task, Tag
+from apps.tasks.serializers import TaskSerializer, TaskDetailSerializer, TagSerializer
 
 
 class TaskView(ModelViewSet):
     lookup_field = "pk"
     permission_classes = [IsAuthenticated]
     serializer_class = TaskDetailSerializer
+    queryset = Task.objects.all()
 
     def get_queryset(self):
-        return Task.objects.all().filter(owner=self.request.user).select_related("owner")
+        return self.queryset.filter(owner=self.request.user).select_related("owner")
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -62,3 +63,13 @@ class TaskView(ModelViewSet):
         serializers = [TaskSerializer(queryset, many=True) for queryset in querysets]
         week_days = [day.strftime("%d %b, %Y") for day in recent_days]
         return Response(dict(zip(week_days, [serializer.data for serializer in serializers])))
+
+
+class TagView(ModelViewSet):
+    lookup_field = "pk"
+    permission_classes = [IsAuthenticated]
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user).select_related("owner")
