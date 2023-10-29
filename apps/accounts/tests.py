@@ -36,8 +36,8 @@ class TestUserAuthentication(TestCase):
 
     def test_new_user_registration(self):
         response = self.client.post(USER_CREATE_URL, data=PAYLOAD)
-        user = User.objects.get(username=PAYLOAD["username"])
 
+        user = User.objects.get(username=PAYLOAD["username"])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(user.check_password(PAYLOAD["password"]))
         self.assertNotIn("password", response.data)
