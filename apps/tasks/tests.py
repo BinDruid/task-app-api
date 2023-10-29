@@ -22,6 +22,7 @@ class TestTaskCreation(TestCase):
         self.user = baker.make(User)
         self.today_tasks_count = 10
         self.yesterday_count = 20
+        self.tags = baker.make(Tag, _quantity=5)
         today = timezone.now()
         yesterday = today + timedelta(days=1)
         baker.make(Task, owner=self.user, created_at=today, _quantity=self.today_tasks_count)
@@ -43,6 +44,17 @@ class TestTaskCreation(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], str(task.id))
+
+    def test_single_task_has_tags(self):
+        tags_titles = [tag.title for tag in self.tags]
+        task = baker.make(Task, owner=self.user, tags=self.tags)
+        url = reverse("tasks:task-detail", args=[task.pk])
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("tags", response.data)
+        for tag_title in response.data["tags"]:
+            self.assertIn(tag_title, tags_titles)
 
     def test_update_single_task(self):
         task = baker.make(Task, owner=self.user)
@@ -72,7 +84,7 @@ class TestTaskCreation(TestCase):
         self.assertEqual(len(response.data[yesterday]), self.yesterday_count)
 
 
-class TestTaskCreation(TestCase):
+class TestTagCreation(TestCase):
     def setUp(self):
         self.user = baker.make(User)
         self.client = APIClient()
