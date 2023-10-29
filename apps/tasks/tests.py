@@ -8,7 +8,7 @@ from model_bakery import baker
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.tasks.models import Task, Tag
+from apps.tasks.models import Tag, Task
 
 User = get_user_model()
 
@@ -24,7 +24,7 @@ class TestTaskEndpoint(TestCase):
         self.yesterday_count = 20
         today = timezone.now()
         yesterday = today + timedelta(days=1)
-        self.tags = baker.make(Tag, _quantity=5)
+        self.tags = baker.make(Tag, owner=self.user, _quantity=5)
         baker.make(Task, owner=self.user, created_at=today, _quantity=self.today_tasks_count)
         baker.make(Task, owner=self.user, created_at=yesterday, _quantity=self.yesterday_count)
         self.client = APIClient()
@@ -50,11 +50,10 @@ class TestTaskEndpoint(TestCase):
         task = baker.make(Task, owner=self.user, tags=self.tags)
         url = reverse("tasks:task-detail", args=[task.pk])
         response = self.client.get(url)
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("tags", response.data)
-        for tag_title in response.data["tags"]:
-            self.assertIn(tag_title, tags_titles)
+        for tag in response.data["tags"]:
+            self.assertIn(tag["title"], tags_titles)
 
     def test_update_single_task(self):
         task = baker.make(Task, owner=self.user)

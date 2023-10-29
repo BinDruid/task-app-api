@@ -1,6 +1,16 @@
 from rest_framework import serializers
 
-from .models import Task, Tag
+from .models import Tag, Task
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ["id", "title", "description"]
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        return Task.objects.create(owner=user, **validated_data)
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -15,12 +25,20 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class TaskDetailSerializer(TaskSerializer):
-    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field="title")
+    tags = TagSerializer(many=True, required=False)
 
     class Meta:
         model = Task
-        fields = TaskSerializer.Meta.fields + ["tags", "owner", "updated_at", "finished_at", "is_finished"]
+        fields = TaskSerializer.Meta.fields + ["tags", "updated_at", "finished_at", "is_finished"]
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        tags = validated_data.pop("tags", [])
+        new_task = Task.objects.create(owner=user, **validated_data)
+        for tag_context in tags:
+            new_tag, created = Tag.objects.get_or_create(owner=user, **tag_context)
+            new_task.add(new_tag)
+        return new_task
 
     def to_representation(self, instance):
         instance_dict = super().to_representation(instance)
@@ -29,11 +47,3 @@ class TaskDetailSerializer(TaskSerializer):
         else:
             del instance_dict["finished_at"]
         return instance_dict
-
-
-class TagSerializer(serializers.ModelSerializer):
-    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = Tag
-        fields = ["id", "title", "description", "owner"]
