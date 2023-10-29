@@ -17,7 +17,7 @@ TAGS_URL = reverse("tasks:tags")
 RECENT_TASKS_URL = reverse("tasks:recent")
 
 
-class TestTaskCreation(TestCase):
+class TestTaskEndpoint(TestCase):
     def setUp(self):
         self.user = baker.make(User)
         self.today_tasks_count = 10
@@ -84,7 +84,7 @@ class TestTaskCreation(TestCase):
         self.assertEqual(len(response.data[yesterday]), self.yesterday_count)
 
 
-class TestTagCreation(TestCase):
+class TestTagEndpoint(TestCase):
     def setUp(self):
         self.user = baker.make(User)
         self.client = APIClient()
