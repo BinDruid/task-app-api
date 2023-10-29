@@ -32,6 +32,7 @@ class TestTaskEndpoint(TestCase):
 
     def test_create_single_task(self):
         payload = {"title": "sample task", "description": "sample description"}
+
         response = self.client.post(TASKS_URL, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -40,6 +41,7 @@ class TestTaskEndpoint(TestCase):
     def test_get_single_task_details(self):
         task = baker.make(Task, owner=self.user)
         url = reverse("tasks:task-detail", args=[task.pk])
+
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -49,7 +51,9 @@ class TestTaskEndpoint(TestCase):
         tags_titles = [tag.title for tag in self.tags]
         task = baker.make(Task, owner=self.user, tags=self.tags)
         url = reverse("tasks:task-detail", args=[task.pk])
+
         response = self.client.get(url)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("tags", response.data)
         for tag in response.data["tags"]:
@@ -59,6 +63,7 @@ class TestTaskEndpoint(TestCase):
         task = baker.make(Task, owner=self.user)
         url = reverse("tasks:task-detail", args=[task.pk])
         payload = {"title": "test_update"}
+
         response = self.client.patch(url, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -67,6 +72,7 @@ class TestTaskEndpoint(TestCase):
     def test_delete_single_task(self):
         task = baker.make(Task, owner=self.user)
         url = reverse("tasks:task-detail", args=[task.pk])
+
         response = self.client.delete(url)
         task_exists = Task.objects.filter(pk=task.pk).exists()
 
@@ -74,9 +80,10 @@ class TestTaskEndpoint(TestCase):
         self.assertFalse(task_exists)
 
     def test_recent_tasks_aggregation(self):
-        response = self.client.get(RECENT_TASKS_URL)
         today = date.today().strftime("%d %b, %Y")
         yesterday = (date.today() + timedelta(days=1)).strftime("%d %b, %Y")
+
+        response = self.client.get(RECENT_TASKS_URL)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data[today]), self.today_tasks_count)
@@ -91,6 +98,7 @@ class TestTagEndpoint(TestCase):
 
     def test_create_single_tag(self):
         payload = {"title": "sample tag", "description": "sample description"}
+
         response = self.client.post(TAGS_URL, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -99,6 +107,7 @@ class TestTagEndpoint(TestCase):
     def test_get_single_tag_details(self):
         tag = baker.make(Tag, owner=self.user)
         url = reverse("tasks:tag-detail", args=[tag.pk])
+
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -108,6 +117,7 @@ class TestTagEndpoint(TestCase):
         tag = baker.make(Tag, owner=self.user)
         url = reverse("tasks:tag-detail", args=[tag.pk])
         payload = {"title": "new tag title"}
+
         response = self.client.patch(url, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -116,6 +126,7 @@ class TestTagEndpoint(TestCase):
     def test_delete_single_tag(self):
         tag = baker.make(Tag, owner=self.user)
         url = reverse("tasks:tag-detail", args=[tag.pk])
+
         response = self.client.delete(url)
         tag_exists = Tag.objects.filter(pk=tag.pk).exists()
 

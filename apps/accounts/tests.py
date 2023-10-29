@@ -45,6 +45,7 @@ class TestUserAuthentication(TestCase):
     def test_user_can_get_token(self):
         user = self.create_sample_user()
         token = Token.objects.get(user=user)
+
         response = self.client.post(TOKEN_URL, data=PAYLOAD)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
