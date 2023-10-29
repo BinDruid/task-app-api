@@ -9,9 +9,13 @@ WORKDIR /code
 EXPOSE 9000
 COPY Pipfile Pipfile.lock /code/
 
-RUN groupadd --gid 1000 dev-user && \
-    useradd --uid 1000 --gid dev-user --no-create-home dev-user
+RUN apt-get update && apt-get install --no-install-recommends -y sudo
 
+RUN groupadd --gid 1000 dev-user && \
+    useradd --uid 1000 --gid dev-user --shell /bin/bash --no-create-home dev-user && \
+    echo dev-user ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/dev-user && \
+    chmod 0440 /etc/sudoers.d/dev-user
+    
 RUN python -m pip install pipenv && \
     pipenv install --system --dev
 

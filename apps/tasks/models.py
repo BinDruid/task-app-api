@@ -6,6 +6,19 @@ from django.contrib.auth import get_user_model
 UserModel = get_user_model()
 
 
+class Tag(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    title = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+    owner = models.ForeignKey(UserModel, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["-title"]
+
+
 class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     title = models.CharField(max_length=255)
@@ -15,6 +28,7 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="تاریخ ویرایش")
     finished_at = models.DateTimeField(null=True, blank=True, verbose_name="تاریخ اتمام")
     is_finished = models.BooleanField(default=False)
+    tags = models.ManyToManyField(Tag, related_name="tasks")
 
     def __str__(self):
         return self.title

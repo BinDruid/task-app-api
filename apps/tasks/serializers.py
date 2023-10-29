@@ -1,25 +1,44 @@
 from rest_framework import serializers
 
-from apps.accounts.serializers import UserSerializer
+from .models import Tag, Task
 
-from .models import Task
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ["id", "title", "description"]
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        return Task.objects.create(owner=user, **validated_data)
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
     class Meta:
         model = Task
         fields = [
             "id",
             "title",
             "description",
-            "owner",
             "created_at",
-            "updated_at",
-            "finished_at",
-            "is_finished",
         ]
+
+
+class TaskDetailSerializer(TaskSerializer):
+    tags = TagSerializer(many=True, required=False)
+
+    class Meta:
+        model = Task
+        fields = TaskSerializer.Meta.fields + ["tags", "updated_at", "finished_at", "is_finished"]
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        tags = validated_data.pop("tags", [])
+        new_task = Task.objects.create(owner=user, **validated_data)
+        for tag_context in tags:
+            new_tag, created = Tag.objects.get_or_create(owner=user, **tag_context)
+            new_task.add(new_tag)
+        return new_task
 
     def to_representation(self, instance):
         instance_dict = super().to_representation(instance)
