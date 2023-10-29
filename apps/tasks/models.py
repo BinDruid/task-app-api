@@ -8,7 +8,7 @@ UserModel = get_user_model()
 
 class Tag(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     owner = models.ForeignKey(UserModel, on_delete=models.PROTECT)
 
