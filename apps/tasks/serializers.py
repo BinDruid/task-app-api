@@ -40,6 +40,19 @@ class TaskDetailSerializer(TaskSerializer):
             new_task.add(new_tag)
         return new_task
 
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        tags = validated_data.pop("tags", None)
+        for field, data in validated_data.items():
+            setattr(instance, field, data)
+        if tags is not None:
+            instance.tags.clear()
+            for tag_context in tags:
+                new_tag, created = Tag.objects.get_or_create(owner=user, **tag_context)
+                instance.add(new_tag)
+        instance.save()
+        return instance
+
     def to_representation(self, instance):
         instance_dict = super().to_representation(instance)
         if instance_dict["is_finished"]:
