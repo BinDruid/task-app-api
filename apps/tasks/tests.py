@@ -12,8 +12,8 @@ from apps.tasks.models import Tag, Task
 
 User = get_user_model()
 
-TASKS_URL = reverse("tasks:tasks")
-TAGS_URL = reverse("tasks:tags")
+TASKS_URL = reverse("tasks:tasks-collection")
+TAGS_URL = reverse("tasks:tags-collection")
 RECENT_TASKS_URL = reverse("tasks:recent")
 
 
@@ -62,12 +62,30 @@ class TestTaskEndpoint(TestCase):
         task = baker.make(Task, owner=self.user)
 
         url = reverse("tasks:task-detail", args=[task.pk])
-        payload = {"title": "test_update"}
-
-        response = self.client.patch(url, data=payload)
+        payload = {"title": "updated title", "description": "updated description"}
+        response = self.client.put(url, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["title"], payload["title"])
+
+    def test_update_single_task_with_tags(self):
+        task = baker.make(Task, owner=self.user)
+
+        url = reverse("tasks:task-detail", args=[task.pk])
+        payload = {
+            "title": "updated title",
+            "description": "updated description",
+            "tags": [{"title": "update tag title", "description": "updated tag description"}],
+        }
+        response = self.client.put(url, data=payload, format="json")
+
+        updated_task = Task.objects.get(pk=task.id)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["title"], updated_task.title)
+        self.assertEqual(response.data["description"], updated_task.description)
+        for tag in payload["tags"]:
+            tag_exists = updated_task.tags.filter(title=tag["title"], owner=self.user).exists()
+            self.assertTrue(tag_exists)
 
     def test_delete_single_task(self):
         task = baker.make(Task, owner=self.user)
@@ -115,8 +133,8 @@ class TestTagEndpoint(TestCase):
     def test_update_single_tag(self):
         tag = baker.make(Tag, owner=self.user)
 
-        url = reverse("tasks:tag-detail", args=[tag.pk])
         payload = {"title": "new tag title"}
+        url = reverse("tasks:tag-detail", args=[tag.pk])
         response = self.client.patch(url, data=payload)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
