@@ -3,7 +3,7 @@ from rest_framework.authtoken import views
 
 from .views import UserCreateView
 
-app_name = "app.accounts"
+app_name = "api.accounts"
 
 urlpatterns = [
     path("", UserCreateView.as_view(), name="create"),

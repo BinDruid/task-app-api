@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.tasks.views import TaskView, TagView
+from api.tasks.views import TaskView, TagView
 
 app_name = "tasks"
 

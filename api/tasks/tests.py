@@ -8,7 +8,7 @@ from model_bakery import baker
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.tasks.models import Tag, Task
+from .models import Tag, Task
 
 User = get_user_model()
 
