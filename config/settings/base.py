@@ -25,7 +25,7 @@ THIRD_PARTY_APPS = [
     "django_extensions",
 ]
 
-PROJECT_APPS = ["apps.core", "apps.accounts", "apps.tasks"]
+PROJECT_APPS = ["api.core", "api.accounts", "api.tasks"]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 

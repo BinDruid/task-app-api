@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from apps.tasks.models import Task, Tag
-from apps.tasks.serializers import TaskSerializer, TaskDetailSerializer, TagSerializer
+from .models import Tag, Task
+from .serializers import TagSerializer, TaskDetailSerializer, TaskSerializer
 
 
 class TaskView(ModelViewSet):

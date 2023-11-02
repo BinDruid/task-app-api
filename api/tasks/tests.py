@@ -8,7 +8,7 @@ from model_bakery import baker
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.tasks.models import Tag, Task
+from .models import Tag, Task
 
 User = get_user_model()
 
@@ -32,7 +32,7 @@ class TestTaskEndpoint(TestCase):
 
     def test_create_single_task(self):
         payload = {"title": "sample task", "description": "sample description"}
-        response = self.client.post(TASKS_URL, data=payload)
+        response = self.client.post(TASKS_URL, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["title"], payload["title"])
@@ -116,10 +116,19 @@ class TestTagEndpoint(TestCase):
 
     def test_create_single_tag(self):
         payload = {"title": "sample tag", "description": "sample description"}
-        response = self.client.post(TAGS_URL, data=payload)
+        response = self.client.post(TAGS_URL, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["title"], payload["title"])
+
+    def test_create_duplicate_tag(self):
+        tag = baker.make(Tag, owner=self.user)
+
+        payload = {"title": tag.title, "description": tag.description}
+        response = self.client.post(TAGS_URL, data=payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("errors", response.data)
 
     def test_get_single_tag_details(self):
         tag = baker.make(Tag, owner=self.user)
@@ -135,7 +144,7 @@ class TestTagEndpoint(TestCase):
 
         payload = {"title": "new tag title"}
         url = reverse("tasks:tag-detail", args=[tag.pk])
-        response = self.client.patch(url, data=payload)
+        response = self.client.patch(url, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["title"], payload["title"])
