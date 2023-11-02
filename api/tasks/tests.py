@@ -32,7 +32,7 @@ class TestTaskEndpoint(TestCase):
 
     def test_create_single_task(self):
         payload = {"title": "sample task", "description": "sample description"}
-        response = self.client.post(TASKS_URL, data=payload)
+        response = self.client.post(TASKS_URL, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["title"], payload["title"])
@@ -116,7 +116,7 @@ class TestTagEndpoint(TestCase):
 
     def test_create_single_tag(self):
         payload = {"title": "sample tag", "description": "sample description"}
-        response = self.client.post(TAGS_URL, data=payload)
+        response = self.client.post(TAGS_URL, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["title"], payload["title"])
@@ -125,7 +125,7 @@ class TestTagEndpoint(TestCase):
         tag = baker.make(Tag, owner=self.user)
 
         payload = {"title": tag.title, "description": tag.description}
-        response = self.client.post(TAGS_URL, data=payload)
+        response = self.client.post(TAGS_URL, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("errors", response.data)
@@ -144,7 +144,7 @@ class TestTagEndpoint(TestCase):
 
         payload = {"title": "new tag title"}
         url = reverse("tasks:tag-detail", args=[tag.pk])
-        response = self.client.patch(url, data=payload)
+        response = self.client.patch(url, data=payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["title"], payload["title"])
