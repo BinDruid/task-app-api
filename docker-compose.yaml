@@ -4,6 +4,8 @@ services:
     build: .
     volumes:
       - .:/code
+      - static-data:/code/web/static
+      - media-data:/code/web/media
     ports:
       - "9000:9000"
     command: sh -c "python /code/manage.py wait_for_db && python /code/manage.py runserver 0.0.0.0:9000"
@@ -23,3 +25,5 @@ services:
 
 volumes:
   postgres-data:
+  static-data:
+  media-data:
