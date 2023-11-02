@@ -121,6 +121,15 @@ class TestTagEndpoint(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["title"], payload["title"])
 
+    def test_create_duplicate_tag(self):
+        tag = baker.make(Tag, owner=self.user)
+
+        payload = {"title": tag.title, "description": tag.description}
+        response = self.client.post(TAGS_URL, data=payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("errors", response.data)
+
     def test_get_single_tag_details(self):
         tag = baker.make(Tag, owner=self.user)
 
