@@ -12,6 +12,11 @@ class TagSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         return Tag.objects.create(owner=user, **validated_data)
 
+class TaskAttachmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Task
+        fields = ["id", "attachment"]
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,7 +29,8 @@ class TaskDetailSerializer(TaskSerializer):
 
     class Meta:
         model = Task
-        fields = TaskSerializer.Meta.fields + ["tags", "updated_at", "finished_at", "is_finished"]
+        fields = TaskSerializer.Meta.fields + ["tags", "updated_at", "finished_at", "is_finished", "attachment"]
+        extra_kwarg = {"attachment":{"required": "False"}}
 
     def create(self, validated_data):
         user = self.context["request"].user

@@ -6,7 +6,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Tag, Task
-from .serializers import TagSerializer, TaskDetailSerializer, TaskSerializer
+from .serializers import (
+    TagSerializer,
+    TaskAttachmentSerializer,
+    TaskDetailSerializer,
+    TaskSerializer,
+)
 
 
 class TaskView(ModelViewSet):
@@ -21,6 +26,8 @@ class TaskView(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return TaskSerializer
+        if self.action == "upload_attachment":
+            return TaskAttachmentSerializer
         return self.serializer_class
 
     @extend_schema(
@@ -63,6 +70,15 @@ class TaskView(ModelViewSet):
         serializers = [TaskSerializer(queryset, many=True) for queryset in querysets]
         week_days = [day.strftime("%d %b, %Y") for day in recent_days]
         return Response(dict(zip(week_days, [serializer.data for serializer in serializers])))
+
+    @action(detail=True, methods=["post"])
+    def upload_attachment(self, request, pk=None):
+        task = self.get_object()
+        serializer = self.get_serializer(task, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
 
 
 class TagView(ModelViewSet):

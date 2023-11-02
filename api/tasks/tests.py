@@ -1,3 +1,5 @@
+import os
+import tempfile
 from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
@@ -5,6 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from model_bakery import baker
+from PIL import Image
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -106,6 +109,32 @@ class TestTaskEndpoint(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data[today]), self.today_tasks_count)
         self.assertEqual(len(response.data[yesterday]), self.yesterday_count)
+
+
+class TestTaskAttachment(TestCase):
+    def setUp(self):
+        self.user = baker.make(User)
+        self.task = baker.make(Task,owner=self.user)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def tearDown(self):
+        self.task.attachment.delete()
+
+    def test_single_task_attachment_file(self):
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as image_file:
+            img = Image.new("RGB", (10, 10))
+            img.save(image_file, format="JPEG")
+            image_file.seek(0)
+
+            payload = {"attachment": image_file}
+            url = reverse("tasks:task-attachment", args=[self.task.pk])
+            response = self.client.post(url, data=payload, format="multipart")
+
+        self.task.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(os.path.exists(self.task.attachment.path))
+        self.assertIn("attachment", response.data)
 
 
 class TestTagEndpoint(TestCase):
