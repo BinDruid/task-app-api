@@ -26,11 +26,11 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class TaskDetailSerializer(TaskSerializer):
     tags = TagSerializer(many=True, required=False)
+    attachment = serializers.ImageField(required=False)
 
     class Meta:
         model = Task
         fields = TaskSerializer.Meta.fields + ["tags", "updated_at", "finished_at", "is_finished", "attachment"]
-        extra_kwarg = {"attachment":{"required": "False"}}
 
     def create(self, validated_data):
         user = self.context["request"].user
