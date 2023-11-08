@@ -7,6 +7,7 @@ from django.db import models
 from django.utils import timezone
 
 UserModel = get_user_model()
+file_storage = FileSystemStorage()
 
 
 class Tag(models.Model):
@@ -34,7 +35,7 @@ class Task(models.Model):
     tags = models.ManyToManyField(Tag, related_name="tasks")
     attachment = models.ImageField(
         upload_to="uploads",
-        storage=FileSystemStorage(),
+        storage=file_storage,
         blank=True,
         null=True,
         verbose_name="مستندات",
