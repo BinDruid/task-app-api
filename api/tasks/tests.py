@@ -21,10 +21,13 @@ RECENT_TASKS_URL = reverse("tasks:recent")
 
 
 class TestTaskEndpoint(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = baker.make(User)
+        cls.tags = baker.make(Tag, owner=cls.user, _quantity=5)
+        cls.task = baker.make(Task, owner=cls.user, tags=cls.tags)
+
     def setUp(self):
-        self.user = baker.make(User)
-        self.tags = baker.make(Tag, owner=self.user, _quantity=5)
-        self.task = baker.make(Task, owner=self.user, tags=self.tags)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
@@ -88,8 +91,11 @@ class TestTaskEndpoint(TestCase):
 
 
 class TestTaskAggregation(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = baker.make(User)
+
     def setUp(self):
-        self.user = baker.make(User)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
@@ -111,9 +117,12 @@ class TestTaskAggregation(TestCase):
 
 
 class TestTaskAttachment(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = baker.make(User)
+        cls.task = baker.make(Task, owner=cls.user)
+
     def setUp(self):
-        self.user = baker.make(User)
-        self.task = baker.make(Task, owner=self.user)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
