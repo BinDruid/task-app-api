@@ -2,17 +2,11 @@ import os
 from uuid import uuid4
 
 from django.contrib.auth import get_user_model
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils import timezone
 
 UserModel = get_user_model()
-
-
-def attachment_file_name(instance, filename):
-    upload_to = "uploads"
-    ext = filename.split(".")[-1]
-    filename = f"{uuid4().hex}.{ext}"
-    return os.path.join(upload_to, filename)
 
 
 class Tag(models.Model):
@@ -39,7 +33,11 @@ class Task(models.Model):
     is_finished = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, related_name="tasks")
     attachment = models.ImageField(
-        upload_to=attachment_file_name, blank=True, null=True, verbose_name="مستندات"
+        upload_to="uploads",
+        storage=FileSystemStorage(),
+        blank=True,
+        null=True,
+        verbose_name="مستندات",
     )
 
     def __str__(self):
