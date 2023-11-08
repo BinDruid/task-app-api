@@ -8,7 +8,7 @@ if os.getenv("DJANGO_SETTINGS_MODULE"):
 
 app = Celery("config")
 
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
-app.conf.timezone = 'UTC'
+app.conf.timezone = "UTC"
