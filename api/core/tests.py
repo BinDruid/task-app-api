@@ -25,8 +25,9 @@ class TestCeleryTasks(TestCase):
         result.get()
         self.assertTrue(result.successful())
 
-    @patch('api.core.tasks.email_task')
-    def test_email_task_endpoint(self, email_task):
+    @patch('api.core.tasks.email_task.delay')
+    def test_email_task_endpoint(self, mock_email_task):
         payload = {}
         response = self.client.post(CELERY_TASK_URL, data=payload, format="json")
+        email_task.delay.assert_called_once()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
