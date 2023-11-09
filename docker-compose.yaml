@@ -50,19 +50,6 @@ services:
       - celery-worker
       - redis
 
-  redis:
-    image: redis:7.2-alpine
-
-  celery_worker:
-    build:
-      context: .
-    command: celery -A config worker -l info --without-gossip --without-mingle --without-heartbeat
-    volumes:
-      - .:/code
-    depends_on:
-      - redis
-      - postgres
-
 volumes:
   postgres-data:
   static-data:
