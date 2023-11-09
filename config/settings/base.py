@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -143,3 +144,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_BACKEND")
+
+CELERY_BEAT_SCHEDULE = {
+    "periodic_email": {
+        "task": "api.core.tasks.send_group_email",
+        "schedule": crontab(minute="*/1"),
+    },
+}

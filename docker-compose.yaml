@@ -38,6 +38,17 @@ services:
       - redis
       - django-api
 
+  celery-beat:
+    build: .
+    command: celery -A config beat -l info
+    volumes:
+      - .:/code
+    env_file:
+      - env/celery.env
+    depends_on:
+      - redis
+      - django-api
+
   celery-dashboard:
     build: .
     command: celery flower --port=5555

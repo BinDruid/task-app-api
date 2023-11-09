@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from unittest.mock import patch
 
-from .tasks import email_task
+from .tasks import send_single_email
 
 User = get_user_model()
 
@@ -20,14 +20,14 @@ class TestCeleryTasks(TestCase):
         self.client.force_authenticate(user=self.user)
 
     @override_settings(CELERY_ALWAYS_EAGER=True)
-    def test_email_task(self):
-        result = email_task.delay()
+    def test_send_single_email(self):
+        result = send_single_email.delay()
         result.get()
         self.assertTrue(result.successful())
 
-    @patch('api.core.tasks.email_task.delay')
-    def test_email_task_endpoint(self, mock_email_task):
+    @patch('api.core.tasks.send_single_email.delay')
+    def test_send_single_email_endpoint(self, mock_send_single_email):
         payload = {}
         response = self.client.post(CELERY_TASK_URL, data=payload, format="json")
-        email_task.delay.assert_called_once()
+        send_single_email.delay.assert_called_once()
         self.assertEqual(response.status_code, status.HTTP_200_OK)

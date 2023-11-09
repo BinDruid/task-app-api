@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from celery.result import AsyncResult
 
-from api.core.tasks import email_task
+from api.core.tasks import send_single_email
 
 
 class CeleryTaskView(APIView):
@@ -19,7 +19,7 @@ class CeleryTaskView(APIView):
         return Response(result, status=200)
 
     def post(self, request):
-        task = email_task.delay()
+        task = send_single_email.delay()
         resp_json = {"message": f"calling celery task with id: {task.id}"}
         return Response(resp_json)
 
