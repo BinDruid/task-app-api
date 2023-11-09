@@ -5,7 +5,7 @@ from api.core.tasks import email_task
 
 
 class CeleryTaskView(APIView):
-    def get(self, request):
-        email_task.delay()
-        resp_json = {"message": "calling celery task"}
+    def post(self, request):
+        task = email_task.delay()
+        resp_json = {"message": f"calling celery task with id:{task.id}"}
         return Response(resp_json)
