@@ -7,12 +7,13 @@ services:
       - static-data:/code/web/static
       - media-data:/code/web/media
     ports:
-      - "9000:9000"
+      - 9000:9000
     command: sh -c "python /code/manage.py wait_for_db && python /code/manage.py runserver 0.0.0.0:9000"
     depends_on:
       - postgres
     env_file:
       - env/django.env
+      - env/celery.env
 
   postgres:
     image: postgres:13-alpine
@@ -21,20 +22,33 @@ services:
     env_file:
       - env/postgres.env
     ports:
-      - "5431:5432"
+      - 5431:5432
 
   redis:
     image: redis:7.2-alpine
 
-  celery_worker:
-    build:
-      context: .
-    command: celery -A config worker -l info --without-gossip --without-mingle --without-heartbeat
+  celery-worker:
+    build: .
+    command: celery -A config worker -l info --without-gossip --without-mingle
     volumes:
       - .:/code
+    env_file:
+      - env/celery.env
     depends_on:
       - redis
-      - postgres
+      - django-api
+
+  celery-dashboard:
+    build: .
+    command: celery flower --port=5555
+    env_file:
+      - env/celery.env
+    ports:
+      - 5555:5555
+    depends_on:
+      - django-api
+      - celery-worker
+      - redis
 
 volumes:
   postgres-data:
