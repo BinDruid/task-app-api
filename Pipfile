@@ -16,6 +16,7 @@ celery = "*"
 flower = "*"
 pillow = "*"
 drf-spectacular = "*"
+django-filter = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"

@@ -24,6 +24,7 @@ THIRD_PARTY_APPS = [
     "drf_standardized_errors",
     "corsheaders",
     "django_extensions",
+    "django_filters",
 ]
 
 PROJECT_APPS = ["api.core", "api.accounts", "api.tasks"]
