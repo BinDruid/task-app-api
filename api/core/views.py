@@ -1,12 +1,12 @@
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from celery.result import AsyncResult
 
 from api.core.tasks import send_single_email
 
 
-class CeleryTaskView(APIView):
+class CeleryTaskView(GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
