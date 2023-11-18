@@ -4,6 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Tag, Task
 from .serializers import (
@@ -16,9 +18,12 @@ from .serializers import (
 
 class TaskView(ModelViewSet):
     lookup_field = "pk"
-    permission_classes = [IsAuthenticated]
-    serializer_class = TaskDetailSerializer
     queryset = Task.objects.all()
+    serializer_class = TaskDetailSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ["title", "is_finished"]
+    search_fields = ["title", "tags__title"]
 
     def get_queryset(self):
         return self.queryset.filter(owner=self.request.user).select_related("owner")
@@ -83,9 +88,12 @@ class TaskView(ModelViewSet):
 
 class TagView(ModelViewSet):
     lookup_field = "pk"
-    permission_classes = [IsAuthenticated]
-    serializer_class = TagSerializer
     queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ["title"]
+    search_fields = ["description"]
 
     def get_queryset(self):
         return self.queryset.filter(owner=self.request.user).select_related("owner")
