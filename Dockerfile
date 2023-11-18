@@ -7,7 +7,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /code
 EXPOSE 9000
-COPY Pipfile Pipfile.lock /code/
 
 RUN apt-get update && apt-get install --no-install-recommends -y sudo
 
@@ -19,6 +18,8 @@ RUN groupadd --gid 1000 dev-user && \
     mkdir -p /code/web/media && \
     chown -R dev-user:dev-user /code/web/ && \
     chmod -R 755 /code/web
+
+COPY Pipfile Pipfile.lock /code/
 
 RUN python -m pip install pipenv && \
     pipenv install --system --dev
