@@ -23,7 +23,7 @@ class TaskView(ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ["title", "is_finished"]
-    search_fields = ["title", "tags__title"]
+    search_fields = ["description"]
 
     def get_queryset(self):
         return self.queryset.filter(owner=self.request.user).select_related("owner")
