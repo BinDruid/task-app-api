@@ -90,30 +90,79 @@ class TestTaskEndpoint(TestCase):
         self.assertFalse(task_exists)
 
 
-class TestTaskAggregation(TestCase):
+class TestTaskCollection(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = baker.make(User)
+        cls.today_tasks_count = 10
+        cls.yesterday_count = 20
+        cls.today = timezone.now()
+        cls.yesterday = cls.today + timedelta(days=-1)
+        baker.make(Task, owner=cls.user, created_at=cls.today, _quantity=cls.today_tasks_count)
+        baker.make(Task, owner=cls.user, created_at=cls.yesterday, _quantity=cls.yesterday_count)
 
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
     def test_recent_tasks_aggregation(self):
-        today_tasks_count = 10
-        yesterday_count = 20
-        today = timezone.now()
-        yesterday = today + timedelta(days=1)
-        baker.make(Task, owner=self.user, created_at=today, _quantity=today_tasks_count)
-        baker.make(Task, owner=self.user, created_at=yesterday, _quantity=yesterday_count)
 
         response = self.client.get(RECENT_TASKS_URL)
 
-        today_string = today.strftime("%d %b, %Y")
-        yesterday_string = yesterday.strftime("%d %b, %Y")
+        today_string = self.today.strftime("%d %b, %Y")
+        yesterday_string = self.yesterday.strftime("%d %b, %Y")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data[today_string]), today_tasks_count)
-        self.assertEqual(len(response.data[yesterday_string]), yesterday_count)
+        self.assertEqual(len(response.data[today_string]), self.today_tasks_count)
+        self.assertEqual(len(response.data[yesterday_string]), self.yesterday_count)
+
+    def test_get_multiple_task_details(self):
+
+        url = TASKS_URL
+        response = self.client.get(url)
+
+        total_task_count = self.today_tasks_count+self.yesterday_count
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], total_task_count)
+
+    def test_filter_tasks_by_correct_title(self):
+        sample_task = baker.make(Task, title="sample", owner=self.user)
+
+        url = TASKS_URL
+        query = f"?title={sample_task.title}"
+        response = self.client.get(url+query)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["title"], sample_task.title)
+
+    def test_search_tasks_by_correct_description(self):
+        sample_task = baker.make(Task, description="sample", owner=self.user)
+
+        url = TASKS_URL
+        query = f"?search={sample_task.description}"
+        response = self.client.get(url+query)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["description"], sample_task.description)
+
+    def test_filter_tasks_by_wrong_title(self):
+
+        url = TASKS_URL
+        query = "?title=not_relevant"
+        response = self.client.get(url+query)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 0)
+
+    def test_search_tasks_by_wrong_description(self):
+
+        url = TASKS_URL
+        query = "?search=not_relevant"
+        response = self.client.get(url+query)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 0)
 
 
 class TestTaskAttachment(TestCase):
