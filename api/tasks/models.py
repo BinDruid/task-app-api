@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils import timezone
 
-UserModel = get_user_model()
+User = get_user_model()
 file_storage = FileSystemStorage()
 
 
@@ -14,7 +14,7 @@ class Tag(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    owner = models.ForeignKey(UserModel, on_delete=models.PROTECT)
+    owner = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.title
@@ -27,7 +27,7 @@ class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    owner = models.ForeignKey(UserModel, on_delete=models.PROTECT)
+    owner = models.ForeignKey(User, on_delete=models.PROTECT)
     created_at = models.DateTimeField(default=timezone.now, verbose_name="تاریخ ایجاد")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="تاریخ ویرایش")
     finished_at = models.DateTimeField(null=True, blank=True, verbose_name="تاریخ اتمام")
