@@ -1,7 +1,6 @@
 from django.db.models.functions import TruncDate
 from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter
@@ -20,7 +19,6 @@ class TaskView(ModelViewSet):
     lookup_field = "pk"
     queryset = Task.objects.all()
     serializer_class = TaskDetailSerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ["title", "is_finished"]
     search_fields = ["description"]
@@ -90,7 +88,6 @@ class TagView(ModelViewSet):
     lookup_field = "pk"
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ["title"]
     search_fields = ["description"]
