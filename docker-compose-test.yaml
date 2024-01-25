@@ -1,0 +1,55 @@
+version: '3.9'
+services:
+  django-api:
+    build: .
+    volumes:
+      - .:/code
+      - static-data:/code/web/static
+      - media-data:/code/web/media
+    command: sh -c "python /code/manage.py wait_for_db && pytest -v"
+    depends_on:
+      - postgres
+      - celery-worker
+      - celery-beat
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.test
+    env_file:
+      - env/django.env
+      - env/celery.env
+
+  postgres:
+    image: postgres:13-alpine
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    env_file:
+      - env/postgres.env
+
+  redis:
+    image: redis:7.2-alpine
+    logging:
+      driver: none
+
+  celery-worker:
+    build: .
+    command: celery -A config worker -l info --without-gossip --without-mingle
+    volumes:
+      - .:/code
+    env_file:
+      - env/celery.env
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A config beat -l info
+    volumes:
+      - .:/code
+    env_file:
+      - env/celery.env
+    depends_on:
+      - redis
+
+volumes:
+  postgres-data:
+  static-data:
+  media-data:
