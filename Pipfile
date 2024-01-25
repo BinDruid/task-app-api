@@ -17,6 +17,7 @@ flower = "*"
 pillow = "*"
 drf-spectacular = "*"
 django-filter = "*"
+python-decouple = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"
@@ -24,6 +25,7 @@ black = "*"
 darker = "*"
 model-bakery = "*"
 pylint-django = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.10"
