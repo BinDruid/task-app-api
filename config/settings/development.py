@@ -7,7 +7,7 @@ DEBUG = True
 
 
 # Application definition
-
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "django.local"]
 INSTALLED_APPS += ["debug_toolbar"]
 
 MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
