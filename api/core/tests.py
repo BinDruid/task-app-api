@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 from model_bakery import baker
 from rest_framework import status
@@ -19,7 +19,6 @@ class TestCeleryTasks(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-    @override_settings(CELERY_ALWAYS_EAGER=True)
     def test_send_single_email(self):
         result = send_single_email.delay()
         result.get()

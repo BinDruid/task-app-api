@@ -1,10 +1,12 @@
 import os
 from pathlib import Path
 from celery.schedules import crontab
+from decouple import config
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.getenv("DJANGO_SECRET")
+SECRET_KEY = config("DJANGO_SECRET")
 
 # Application definition
 
@@ -66,11 +68,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASS"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASS"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 }
 
@@ -144,8 +146,8 @@ SPECTACULAR_SETTINGS = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER")
-CELERY_RESULT_BACKEND = os.getenv("CELERY_BACKEND")
+CELERY_BROKER_URL = config("CELERY_BROKER")
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND")
 
 CELERY_BEAT_SCHEDULE = {
     "periodic_email": {
