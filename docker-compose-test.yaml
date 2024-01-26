@@ -34,6 +34,8 @@ services:
     command: celery -A config worker -l info --without-gossip --without-mingle
     volumes:
       - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.test
     env_file:
       - env/celery.env
     depends_on:
@@ -44,6 +46,8 @@ services:
     command: celery -A config beat -l info
     volumes:
       - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.test
     env_file:
       - env/celery.env
     depends_on:
