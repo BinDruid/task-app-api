@@ -20,9 +20,11 @@ python-decouple = "*"
 pytest = "7.4"
 pytest-django = "*"
 model-bakery = "*"
+confluent-kafka = "*"
 
 [dev-packages]
 django-debug-toolbar = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.11"
