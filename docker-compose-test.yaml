@@ -1,6 +1,6 @@
 version: '3.9'
 services:
-  django-api:
+  django-api-test:
     build: .
     volumes:
       - .:/code
