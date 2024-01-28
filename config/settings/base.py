@@ -126,6 +126,39 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "web/media/")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Logging Configuration
+DJANGO_LOG_LEVEL = config('DJANGO_LOG_LEVEL', default='INFO', cast=str)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': DJANGO_LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
+            'propagate': True,
+        },
+        'django.security.*': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
+        },
+        'django.security.csrf': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
+        },
+    }
+}
+
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
