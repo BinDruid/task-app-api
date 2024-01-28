@@ -20,24 +20,17 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TEMPLATE_CONTEXT': True,
 }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-        },
-        'kafka': {
-            'level': 'INFO',
-            'class': 'config.loggers.KafkaHandler',
-            'topic': 'django'
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'kafka'],
-            'propagate': True
-        },
-    },
+# Development Logging setting
+
+LOGGING['handlers']['kafka'] = {
+    'level': DJANGO_LOG_LEVEL,
+    'class': 'config.loggers.KafkaHandler',
+    'topic': 'django',
+    'security_protocol': 'PLAINTEXT'
+}
+
+LOGGING['loggers']['django'] = {
+    'handlers': ['console', 'kafka'],
+    'level': DJANGO_LOG_LEVEL,
+    'propagate': True,
 }
